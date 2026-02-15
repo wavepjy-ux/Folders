@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YT Trim Downloader</title>
+    <link rel="stylesheet" href="popup.css" />
+  </head>
+  <body>
+    <main class="container">
+      <h1>YouTube Trim Downloader</h1>
+
+      <label>
+        YouTube URL
+        <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=..." />
+      </label>
+
+      <label>
+        다운로드 폴더 경로 (선택)
+        <input id="downloadDir" type="text" placeholder="예: C:\\Users\\me\\Downloads\\YT" />
+      </label>
+
+      <button id="loadFormats" class="btn secondary">화질 불러오기</button>
+
+      <label>
+        화질 선택
+        <select id="formatSelect">
+          <option value="">먼저 화질을 불러오세요</option>
+        </select>
+      </label>
+
+      <section class="trim-grid">
+        <label>
+          시작(초)
+          <input id="start" type="number" min="0" step="1" placeholder="0" />
+        </label>
+        <label>
+          종료(초)
+          <input id="end" type="number" min="1" step="1" placeholder="30" />
+        </label>
+      </section>
+
+      <button id="download" class="btn primary">다운로드</button>
+      <p id="status" class="status">대기 중</p>
+    </main>
+
+    <script src="popup.js"></script>
+  </body>
+</html>
