@@ -9,7 +9,7 @@
 
 - YouTube URL 입력
 - 영상 화질(포맷) 목록 조회
-- 시작/종료 시간(초) 기반 Trim
+- 시작/종료 시간(분:초 또는 시:분:초) 기반 Trim
 - 다운로드 요청 및 진행상태 표시
 
 ## 폴더 구조
@@ -57,9 +57,10 @@ yt-dlp --version
 2. 유튜브 URL 입력 후 **화질 불러오기** 클릭
 3. 원하는 화질 선택
 4. (선택) 다운로드 폴더 절대 경로 입력 (예: `C:\\Users\\me\\Downloads\\YT`)
-5. 시작/종료 시간 입력 (예: 10 ~ 35)
+5. 시작/종료 시간 입력 (예: `16:00` ~ `18:30`)
 6. **다운로드** 클릭
 
+팝업은 포커스를 잃으면 닫히지만, 입력값/상태는 저장되어 다시 열면 복원됩니다.
 다운로드 폴더를 비워두면 서버 실행 위치의 `downloads/` 폴더에 저장됩니다.
 
 ## API
@@ -67,7 +68,7 @@ yt-dlp --version
 - `POST /api/formats`
   - body: `{ "url": "https://www.youtube.com/watch?v=..." }`
 - `POST /api/download`
-  - body: `{ "url": "...", "format_id": "...", "start": 10, "end": 35, "download_dir": "C:\\Users\\me\\Downloads\\YT" }`
+  - body: `{ "url": "...", "format_id": "...", "start": 960, "end": 1110, "download_dir": "C:\\Users\\me\\Downloads\\YT" }`
 
 ## 주의사항
 

@@ -31,17 +31,18 @@
 
       <section class="trim-grid">
         <label>
-          시작(초)
-          <input id="start" type="number" min="0" step="1" placeholder="0" />
+          시작(분:초)
+          <input id="start" type="text" placeholder="예: 16:00" />
         </label>
         <label>
-          종료(초)
-          <input id="end" type="number" min="1" step="1" placeholder="30" />
+          종료(분:초)
+          <input id="end" type="text" placeholder="예: 18:30" />
         </label>
       </section>
 
       <button id="download" class="btn primary">다운로드</button>
       <p id="status" class="status">대기 중</p>
+      <p class="status">팝업이 닫혀도 입력값/상태는 저장됩니다.</p>
     </main>
 
     <script src="popup.js"></script>
