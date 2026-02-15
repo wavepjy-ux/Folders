@@ -45,6 +45,17 @@ ffmpeg -version
 yt-dlp --version
 ```
 
+
+#### Windows 원클릭 실행
+
+프로젝트 루트에서 아래 파일을 더블클릭하면 백엔드가 자동 실행됩니다.
+
+- `start_backend.bat` : venv 생성/의존성 설치 후 백엔드 실행
+- `stop_backend.bat` : 8787 포트를 점유한 백엔드 프로세스 종료
+
+> 처음 실행은 의존성 설치로 시간이 조금 걸릴 수 있습니다.
+
+
 ### 2) 크롬 확장프로그램 로드
 
 1. `chrome://extensions` 이동
