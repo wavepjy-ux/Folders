@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "YouTube Trim Downloader",
+  "description": "YouTube URL로 화질 선택 및 구간 트림 다운로드 요청",
+  "version": "0.1.0",
+  "permissions": ["storage"],
+  "host_permissions": ["http://localhost:8787/*"],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "YT Trim Downloader"
+  },
+  "background": {
+    "service_worker": "background.js"
+  }
+}
