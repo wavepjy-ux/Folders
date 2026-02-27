@@ -42,7 +42,7 @@ winget install --id yt-dlp.yt-dlp -e
 #### macOS 빠른 설치 (Terminal)
 
 ```bash
-brew install ffmpeg yt-dlp
+brew install ffmpeg yt-dlp deno
 ```
 
 설치 확인:
@@ -121,3 +121,12 @@ xattr -dr com.apple.quarantine start_backend_mac.command stop_backend_mac.comman
 - 오류: `You have requested downloading the video partially, but ffmpeg is not installed`
   - 원인: Trim(구간 다운로드)에는 ffmpeg가 필수입니다.
   - 해결: 위의 Windows 설치 명령으로 ffmpeg를 설치한 뒤, PowerShell을 다시 열고 백엔드를 재시작하세요.
+
+
+- 오류: `Requested format is not available` 또는 `Signature solving failed`
+  - 원인: YouTube 측 포맷/시그니처 보호 로직 변경으로 선택한 포맷이 사라질 수 있습니다.
+  - 해결:
+    1. `yt-dlp -U` 로 업데이트
+    2. macOS는 `brew install deno` 설치
+    3. 다시 화질 불러오기 후 재시도
+  - 참고: 서버에서 해당 오류가 나오면 자동으로 `bv*+ba/b` 포맷으로 1회 재시도합니다.

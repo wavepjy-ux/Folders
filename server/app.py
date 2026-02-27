@@ -52,10 +52,19 @@ def run_cmd(cmd: list[str]) -> str:
 
     if proc.returncode != 0:
         stderr = proc.stderr.strip() or "command failed"
-        if "ffmpeg is not installed" in stderr.lower():
+        lower = stderr.lower()
+        if "ffmpeg is not installed" in lower:
             raise HTTPException(
                 status_code=400,
                 detail="ffmpeg가 설치되어 있지 않아 구간(Trim) 다운로드를 진행할 수 없습니다.",
+            )
+        if "signature solving failed" in lower or "n challenge solving failed" in lower:
+            raise HTTPException(
+                status_code=400,
+                detail=(
+                    "YouTube 보호 로직으로 일부 포맷 조회가 실패했습니다. "
+                    "yt-dlp를 최신으로 업데이트하고(yt-dlp -U), macOS에서는 deno 설치를 권장합니다."
+                ),
             )
         raise HTTPException(status_code=400, detail=stderr)
     return proc.stdout
@@ -80,6 +89,27 @@ def resolve_download_dir(raw_dir: Optional[str]) -> Path:
 
     path.mkdir(parents=True, exist_ok=True)
     return path
+
+
+def build_download_cmd(url: str, format_selector: str, out_template: str, start: Optional[int], end: Optional[int]) -> list[str]:
+    cmd = [
+        "yt-dlp",
+        url,
+        "-f",
+        format_selector,
+        "--merge-output-format",
+        "mp4",
+        "-o",
+        out_template,
+    ]
+
+    if start is not None or end is not None:
+        section_start = start or 0
+        section_end = end if end is not None else "inf"
+        section = f"*{section_start}-{section_end}"
+        cmd.extend(["--download-sections", section, "--force-keyframes-at-cuts"])
+
+    return cmd
 
 
 @app.get("/health")
@@ -130,37 +160,18 @@ def download(req: DownloadRequest) -> dict:
     target_dir = resolve_download_dir(req.download_dir)
     out_template = str(target_dir / f"{title}.%(ext)s")
 
-    if req.start is not None or req.end is not None:
-        section_start = req.start or 0
-        section_end = req.end if req.end is not None else "inf"
-        section = f"*{section_start}-{section_end}"
+    primary_cmd = build_download_cmd(req.url, req.format_id, out_template, req.start, req.end)
 
-        cmd = [
-            "yt-dlp",
-            req.url,
-            "-f",
-            req.format_id,
-            "--download-sections",
-            section,
-            "--force-keyframes-at-cuts",
-            "--merge-output-format",
-            "mp4",
-            "-o",
-            out_template,
-        ]
-    else:
-        cmd = [
-            "yt-dlp",
-            req.url,
-            "-f",
-            req.format_id,
-            "--merge-output-format",
-            "mp4",
-            "-o",
-            out_template,
-        ]
+    try:
+        run_cmd(primary_cmd)
+    except HTTPException as exc:
+        detail = str(exc.detail).lower()
+        if "requested format is not available" not in detail:
+            raise
 
-    run_cmd(cmd)
+        fallback_selector = "bv*+ba/b"
+        fallback_cmd = build_download_cmd(req.url, fallback_selector, out_template, req.start, req.end)
+        run_cmd(fallback_cmd)
 
     files = sorted(target_dir.glob(f"{title}*"), key=lambda p: p.stat().st_mtime, reverse=True)
     if not files:
